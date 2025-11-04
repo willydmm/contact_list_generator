@@ -20,6 +20,7 @@ sheet_name = st.text_input(
 
 
 # --- Helpers
+# Validate Phone Number
 def validate_phone_number(phone_number: str) -> str:
     if pd.isna(phone_number):
         return ""
@@ -30,6 +31,7 @@ def validate_phone_number(phone_number: str) -> str:
     return phone_number
 
 
+# Validate Ticket Number
 def validate_ticket_number(ticket_number: str) -> str:
     if pd.isna(ticket_number):
         return ""
@@ -38,10 +40,12 @@ def validate_ticket_number(ticket_number: str) -> str:
     return ticket_number
 
 
+# Convert DataFrame to CSV bytes
 def to_csv_bytes(df: pd.DataFrame) -> bytes:
     return df.to_csv(index=False).encode("utf-8")
 
 
+# --- Main Logic
 if uploaded and sheet_name:
     try:
         df = pd.read_excel(uploaded, sheet_name=sheet_name, dtype=str)
@@ -75,11 +79,12 @@ if uploaded and sheet_name:
         valid_count = len(valid_df)
         invalid_count = len(invalid_df)
 
+        # --- Display Results
         c1, c2, c3 = st.columns(3)
         c1.metric("Total rows", total)
         c2.metric("Valid", valid_count)
         c3.metric("Invalid", invalid_count)
-
+        # -- Preview and Download
         st.divider()
         st.subheader("Preview")
         st.write("**Valid rows**")
