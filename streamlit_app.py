@@ -12,14 +12,14 @@ st.caption(
     "Upload an Excel file, choose a sheet, and convert it to a clean CSV (phone, full_name, nick_name)."
 )
 
-# --- Minimal controls
+# --- Controls
 uploaded = st.file_uploader("Excel file (.xlsx)", type=["xlsx"])
 sheet_name = st.text_input(
     "Sheet name", value="Sheet2", help="Exact name of the sheet to read"
 )
 
 
-# --- Helpers (ported from your script)
+# --- Helpers
 def validate_phone_number(phone_number: str) -> str:
     if pd.isna(phone_number):
         return ""
@@ -46,7 +46,7 @@ if uploaded and sheet_name:
     try:
         df = pd.read_excel(uploaded, sheet_name=sheet_name, dtype=str)
 
-        # Transform (mirrors your script)
+        # Transform
         transformed_df = pd.DataFrame()
         transformed_df["phone"] = df["Phone"].map(validate_phone_number)
 
@@ -55,7 +55,13 @@ if uploaded and sheet_name:
         customer_clean = customer_clean.str.replace(",", " ", regex=False)
 
         transformed_df["nick_name"] = customer_clean
-        transformed_df["full_name"] = "IR1 - " + ticket_clean + " - " + customer_clean
+
+        korkel_clean = df["Korkel"].astype(str).fillna("").str.strip()
+        korkel_clean = korkel_clean.str.replace(",", " ", regex=False)
+
+        transformed_df["full_name"] = (
+            "IR1 - " + korkel_clean + " - " + ticket_clean + " - " + customer_clean
+        )
 
         valid_rows = (transformed_df["phone"] != "") & (
             transformed_df["full_name"] != ""
