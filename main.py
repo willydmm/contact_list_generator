@@ -1,7 +1,8 @@
-import pandas as pd
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
+
+import pandas as pd
 
 # Configure input file path
 
@@ -62,7 +63,9 @@ valid_count = len(valid_df)
 print(f"Saving {valid_count} contact{'s' if valid_count != 1 else ''}...")
 
 # Format today's date and time
-timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")  # → 20251030_142530
+timestamp_str = datetime.now(tz=timezone.utc).strftime(
+    "%Y%m%d_%H%M%S"
+)  # → 20251030_142530
 
 # Build filename with timestamp
 output_filename = f"Contact_List_{timestamp_str}.csv"
